@@ -1,15 +1,26 @@
-FROM clonardo/socketio-backend
+FROM node:14-alpine AS build-base
+
+# set our node environment, either development or production
+# defaults to production, compose overrides this to development on build and run
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
 
 # Create app directory
 WORKDIR /usr/src/app
 
-RUN yarn
+# Install app dependencies
+COPY package.json ./
+RUN npm i
 
-# Don't use root user
-USER node
+# Copy in the source
+COPY . .
 
-# Expose Port
-EXPOSE 3000
+# T E S T
+# =======
+#
+# Add a test environment to the service above:
+#
+FROM build-base AS test
 
-# Run the app
-ENTRYPOINT ["node", "./src/index.js"]
+# Run the tests
+ENTRYPOINT ["npm", "test"]
