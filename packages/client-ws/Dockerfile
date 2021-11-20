@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:14-alpine AS build-base
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run
@@ -17,6 +17,13 @@ COPY . .
 
 # Don't use root user
 USER node
+
+# T E S T
+# =======
+#
+# Add a test environment to the service above:
+#
+FROM build-base AS test
 
 # Run the tests
 ENTRYPOINT ["npm", "test"]
