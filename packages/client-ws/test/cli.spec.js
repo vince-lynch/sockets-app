@@ -53,3 +53,15 @@ test(
   },
   defaultTimeout
 )
+
+test(
+  'Error when reaching fail test case',
+  async () => {
+    const QUERY = 'fail'
+
+    const { code: exitCode, stderr: err } = await cli(['search', QUERY], '.')
+    expect(err).toBe('Failure test case reached!')
+    expect(exitCode).toBe(1)
+  },
+  defaultTimeout
+)
