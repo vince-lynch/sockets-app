@@ -10,7 +10,7 @@ services:
       - node
       - ./src/index.js
 
-  client:
+  test-client:
     build:
       context: .
       target: test
@@ -21,8 +21,8 @@ services:
       - WS_SERVER_URL=server
       - WS_SERVER_PORT=3000
       - WS_SERVER_PROTOCOL=http
-    volumes:
-      - .:/usr/src/app
+    #volumes:
+     ## - .:/usr/src/app
       ##- /usr/src/app/node_modules
     entrypoint:
     - /bin/sh
