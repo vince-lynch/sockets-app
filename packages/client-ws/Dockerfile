@@ -1,15 +1,17 @@
-FROM clonardo/socketio-backend
+FROM node:14-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
 
-RUN yarn
+# Install app dependencies
+COPY package.json ./
+RUN npm i
+
+# Copy in the source
+COPY . .
 
 # Don't use root user
 USER node
 
-# Expose Port
-EXPOSE 3000
-
-# Run the app
-ENTRYPOINT ["node", "./src/index.js"]
+# Run the tests
+ENTRYPOINT ["npm", "test"]

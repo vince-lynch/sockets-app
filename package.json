@@ -10,7 +10,7 @@
     "clean:packages": "lerna clean --yes",
     "clean:root": "rimraf node_modules",
     "postinstall": "npm run bootstrap",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm --prefix=./packages/client-ws/ run docker:test"
   },
   "repository": {
     "type": "git",
