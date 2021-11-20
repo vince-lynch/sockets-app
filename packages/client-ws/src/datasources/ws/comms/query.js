@@ -10,14 +10,13 @@ const hasFinishedPagination = (page, resultCount) => page === resultCount
 const onResult =
   (resolve, reject, totalData = []) =>
   ({ error, films, name, page, resultCount }) => {
-    if (error) {
-      reject(error)
-    } else {
-      totalData.push(mapWsStarWarsResToString(films, name))
-      if (hasFinishedPagination(page, resultCount)) {
-        resolve(totalData)
-      }
-    }
+    if (error) return reject(error)
+
+    totalData.push(mapWsStarWarsResToString(films, name))
+
+    if (hasFinishedPagination(page, resultCount)) return resolve(totalData)
+
+    return totalData
   }
 
 const search = (conn) => (query) =>
