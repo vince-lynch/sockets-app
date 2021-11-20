@@ -25,6 +25,7 @@ const ws = async (io, protocol, host, port) =>
       Promise.all([connection, onDisconnected(connection)])
     )
     .then(([connection]) => commands(connection))
+    .then((c) => c.query.search)
 
 module.exports = {
   ws

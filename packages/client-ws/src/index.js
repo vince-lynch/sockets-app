@@ -23,10 +23,13 @@ const wsCommands = ws(
 )
 
 const action = (query) =>
-  wsCommands.then(search(query)).catch((err) => {
-    process.stderr.write(err)
-    process.exit(1)
-  })
+  wsCommands
+    .then(search(query))
+    .catch((err) => {
+      process.stderr.write(err)
+      process.exit(1)
+    })
+    .finally(() => process.exit(0))
 
 program
   .command('search [query]')
