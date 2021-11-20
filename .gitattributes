@@ -1,0 +1,5 @@
+* text=auto
+
+# This must be overridden for any binary files:
+#
+* eol=lf

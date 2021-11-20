@@ -1,0 +1,45 @@
+{
+  "name": "sockets-app",
+  "version": "0.1.0",
+  "description": "a app to play around with sockets",
+  "main": "index.js",
+  "scripts": {
+    "bootstrap": "lerna bootstrap --ci --hoist",
+    "clean": "npm run clean:artifacts && npm run clean:packages && npm run clean:root",
+    "clean:artifacts": "lerna run clean --parallel",
+    "clean:packages": "lerna clean --yes",
+    "clean:root": "rimraf node_modules",
+    "postinstall": "npm run bootstrap",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:vince-lynch/sockets-app.git"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@commitlint/cli": "^12.0.0",
+    "@commitlint/config-conventional": "^12.0.0",
+    "@commitlint/config-lerna-scopes": "^12.0.0",
+    "@typescript-eslint/eslint-plugin": "^3.6.0",
+    "@typescript-eslint/parser": "^3.6.0",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-const-case": "^1.2.2",
+    "eslint-plugin-cypress": "^2.11.2",
+    "eslint-plugin-filenames-simple": "^0.6.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsdoc": "^32.0.2",
+    "eslint-plugin-markdown": "^2.2.0",
+    "eslint-plugin-no-loops": "^0.3.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-regexp": "^0.1.1",
+    "eslint-plugin-yml": "^0.10.0",
+    "husky": "^4.2.5",
+    "lerna": "^3.22.1",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.2.1"
+  }
+}
