@@ -15,9 +15,6 @@ RUN npm i
 # Copy in the source
 COPY . .
 
-# Don't use root user
-USER node
-
 # T E S T
 # =======
 #
