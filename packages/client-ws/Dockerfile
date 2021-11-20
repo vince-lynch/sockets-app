@@ -25,7 +25,7 @@ USER node
 #
 FROM build-base AS test
 
-RUN npm --save-dev jest@^27.3.1
+RUN npm i --save-dev jest@^27.3.1
 
 # Run the tests
 ENTRYPOINT ["npm", "test"]
