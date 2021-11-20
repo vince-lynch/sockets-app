@@ -1,0 +1,20 @@
+version: '3.9'
+services:
+  mdsim:
+    build:
+      context: ./
+
+    ports:
+      - '3000:3000'
+      - '9229:9229'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+#      - DEBUG=express:*
+    command:
+      - nodemon
+      - --legacy-watch
+      - --inspect=0.0.0.0:9229
+      - ./src/index.js

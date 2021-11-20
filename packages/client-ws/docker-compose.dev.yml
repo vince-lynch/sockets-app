@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  server:
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        node ./src/index.js
