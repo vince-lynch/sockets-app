@@ -22,7 +22,5 @@ COPY . .
 #
 FROM build-base AS test
 
-RUN npm i --save-dev jest@^27.3.1
-
 # Run the tests
 ENTRYPOINT ["npm", "test"]

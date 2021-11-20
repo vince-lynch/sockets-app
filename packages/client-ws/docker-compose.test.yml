@@ -29,5 +29,5 @@ services:
     - -c
     - |
       npx wait-on tcp:server:3000 && (
-        npm test
+        npx jest
       )
