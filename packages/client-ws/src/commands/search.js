@@ -1,15 +1,6 @@
-const search =
-  (searchTerm) =>
-  ({ query: q }) =>
-    q
-      .search(searchTerm)
-      .then((results) => {
-        results.forEach((result) => process.stdout.write(result))
-        return process.exit(0)
-      })
-      .catch((err) => {
-        process.stderr.write(err)
-        return process.exit(1)
-      })
+const search = (searchTerm) => (wsSearch) =>
+  wsSearch(searchTerm).then((results) =>
+    results.map((result) => process.stdout.write(result))
+  )
 
 module.exports = search
