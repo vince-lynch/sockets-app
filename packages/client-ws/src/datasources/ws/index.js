@@ -1,4 +1,4 @@
-const { operations } = require('./comms/index.js')
+const { commands } = require('./comms/index.js')
 
 /**
  *
@@ -16,7 +16,7 @@ const onConnected = (conn) =>
 const ws = async (io, protocol, host, port) => {
   const configSocket = connect(io)
   const connection = await onConnected(configSocket(protocol, host, port))
-  return operations(connection)
+  return commands(connection)
 }
 
 module.exports = {

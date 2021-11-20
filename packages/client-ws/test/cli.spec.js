@@ -1,6 +1,8 @@
 const path = require('path')
 const { exec } = require('child_process')
 
+const defaultTimeout = 12 * 1000
+
 /**
  * @param args
  * @param cwd
@@ -37,5 +39,17 @@ test(
     expect(results).toEqual(expect.stringContaining(QUERY))
     expect(exitCode).toBe(0)
   },
-  12 * 1000
+  defaultTimeout
+)
+
+test(
+  'Error when searching for number',
+  async () => {
+    const QUERY = 1234
+
+    const { code: exitCode, stderr: err } = await cli(['search', QUERY], '.')
+    expect(err).toBe(`No valid matches retrieved for query '${QUERY}'`)
+    expect(exitCode).toBe(1)
+  },
+  defaultTimeout
 )
