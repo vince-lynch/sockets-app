@@ -1,17 +1,30 @@
+const { program } = require('commander')
 const { io } = require('socket.io-client')
+const fs = require('fs')
 
-const socket = io('http://localhost:3000')
+const { ws } = require('./datasources/ws/index.js')
 
-const message = {
-  query: 'Luke'
-}
+const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
 
-socket.on('connect', () => {
-  console.log(socket.id)
+program.version(packageJson.version)
 
-  socket.emit('search', message)
+const {
+  WS_SERVER_URL = 'localhost',
+  WS_SERVER_PORT = '3000',
+  WS_SERVER_PROTOCOL = 'http'
+} = process.env
 
-  socket.on('search', (data) => {
-    console.log('data', data)
+const wsOperations = async () =>
+  ws(io, WS_SERVER_PROTOCOL, WS_SERVER_URL, parseInt(WS_SERVER_PORT, 10))
+
+program
+  .command('search [query]')
+  .description('searches Star Wars by character name')
+  .action(async (query) => {
+    const { query: q } = await wsOperations()
+    const results = await q.search(query)
+    results.forEach((result) => process.stdout.write(result))
+    process.exit(0)
   })
-})
+
+program.parse(process.argv)
