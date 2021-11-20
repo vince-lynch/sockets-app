@@ -18,6 +18,7 @@ const server = new Server(httpServer)
 
 server.on('connection', (socket) => {
   console.log('got connection')
+  // Socket.disconnect()
 
   socket.on(TOPIC_SEARCH, async (message) => {
     const matches = await doSearch(message.query)

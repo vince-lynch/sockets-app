@@ -15,15 +15,22 @@ const {
   WS_SERVER_PROTOCOL = 'http'
 } = process.env
 
-const wsCommands = async () =>
-  ws(io, WS_SERVER_PROTOCOL, WS_SERVER_URL, parseInt(WS_SERVER_PORT, 10))
+const wsCommands = ws(
+  io,
+  WS_SERVER_PROTOCOL,
+  WS_SERVER_URL,
+  parseInt(WS_SERVER_PORT, 10)
+)
+
+const action = (query) =>
+  wsCommands.then(search(query)).catch((err) => {
+    process.stderr.write(err)
+    process.exit(1)
+  })
 
 program
   .command('search [query]')
   .description('searches Star Wars by character name')
-  .action(async (query) => {
-    const wsSearch = await search(wsCommands)
-    wsSearch(query)
-  })
+  .action(action)
 
 program.parse(process.argv)
