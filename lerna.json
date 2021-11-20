@@ -1,0 +1,7 @@
+{
+  "packages": [
+    "packages/client-ws",
+    "packages/server-ws"
+  ],
+  "version": "0.0.0"
+}
