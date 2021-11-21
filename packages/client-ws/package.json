@@ -4,7 +4,6 @@
   "description": "ws client",
   "scripts": {
     "start": "node src/index.js",
-    "t": "node test/test.js",
     "test": "jest",
     "docker:test": "docker-compose -f ./docker-compose.test.yml run --rm test-client --service-ports"
   },
