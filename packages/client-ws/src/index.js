@@ -1,13 +1,8 @@
-const { program } = require('commander')
+const readline = require('readline')
 const { io } = require('socket.io-client')
-const fs = require('fs')
 
 const search = require('./commands/search.js')
 const { ws } = require('./datasources/ws/index.js')
-
-const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
-
-program.version(packageJson.version)
 
 const {
   WS_SERVER_URL = 'localhost',
@@ -23,17 +18,15 @@ const wsCommands = ws(
 )
 
 const action = (query) =>
-  wsCommands
-    .then(search(query))
-    .catch((err) => {
-      process.stderr.write(err)
-      process.exit(1)
-    })
-    .finally(() => process.exit(0))
+  wsCommands.then(search(query)).catch((err) => {
+    process.stderr.write(`${err}\n`)
+    // Process.exit(1)
+  })
 
-program
-  .command('search [query]')
-  .description('searches Star Wars by character name')
-  .action(action)
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
 
-program.parse(process.argv)
+process.stdout.write('What character would you like to search for? ')
+rl.on('line', action)
