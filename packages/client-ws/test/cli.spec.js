@@ -2,37 +2,51 @@ const path = require('path')
 const { spawn } = require('child_process')
 
 const defaultTimeout = 14 * 1000
+const PAGINATION_REGEX = /\(([^)]+)\)/
+
+const parseResult = (output, resolve) => (page) => {
+  const p = page.match(PAGINATION_REGEX)
+  const [_i, _totalPages] = p ? p[1].split('/') : [-1, -1]
+  const i = Number(_i)
+  const totalPages = Number(_totalPages)
+
+  if (i >= 0) {
+    output.results.lines.push({ page: i, line: page })
+
+    if (i === totalPages) {
+      const allData = Object.assign(output, {
+        results: { lines: output.results.lines, totalPages }
+      })
+      resolve(allData)
+    }
+  }
+}
+
+const parseResults = (resolve, output) => (data) => {
+  const s = data.toString()
+  const pages = s.split('\n')
+
+  pages.forEach(parseResult(output, resolve))
+}
+
+const parseError = (resolve, output) => (data) => {
+  const err = data.toString().split('\n')
+  const error = err[0] ? err[0] : null
+  resolve({ ...output, error })
+}
 
 const writeQuery = (c, query = 'Luke Skywalker') =>
   new Promise((resolve) => {
-    const output = { results: [], error: null }
+    const output = { error: null, results: { lines: [], totalPages: 0 } }
+
+    const parseStdOut = parseResults(resolve, output)
+    const parseStdErr = parseError(resolve, output)
 
     c.stdin.write(`${query}\r`)
 
-    c.stdout.on('data', (data) => {
-      const s = data.toString()
-      const pages = s.split('\n')
+    c.stdout.on('data', parseStdOut)
 
-      pages.forEach((page) => {
-        if (page[0] === '(') {
-          output.results.push(page)
-        }
-      })
-      if (
-        output.results.length &&
-        pages[pages.length - 1] ===
-          'What character would you like to search for? '
-      ) {
-        resolve(output)
-      }
-    })
-
-    c.stderr.on('data', (data) => {
-      const p = data.toString().split('\n')
-      // eslint-disable-next-line prefer-destructuring
-      output.error = p[0]
-      resolve(output)
-    })
+    c.stderr.on('data', parseStdErr)
   })
 
 beforeEach(() => {
@@ -48,9 +62,11 @@ test(
 
     expect(error).toBe(null)
 
-    expect(results.length).toBe(1)
+    const { totalPages, lines } = results
 
-    expect(results[0]).toBe(
+    expect(totalPages).toBe(1)
+
+    expect(lines[0].line).toBe(
       '(1/1) Luke Skywalker - A New Hope, The Empire Strikes Back, Return of the Jedi, Revenge of the Sith'
     )
   },
@@ -65,9 +81,11 @@ test(
 
     expect(error).toBe(null)
 
-    expect(results.length).toBe(1)
+    const { totalPages, lines } = results
 
-    expect(results[0]).toBe(
+    expect(totalPages).toBe(1)
+
+    expect(lines[0].line).toBe(
       '(1/1) Darth Vader - A New Hope, The Empire Strikes Back, Return of the Jedi, Revenge of the Sith'
     )
   },
@@ -80,7 +98,7 @@ test(
     const QUERY = 'Roger Moore'
     const { results, error } = await writeQuery(this.c, QUERY)
 
-    expect(results.length).toBe(0)
+    expect(results.lines.length).toBe(0)
 
     expect(error).toBe(`No valid matches retrieved for query '${QUERY}'`)
   },
@@ -95,9 +113,11 @@ test(
 
     expect(error).toBe(null)
 
-    expect(results.length).toBe(37)
+    const { totalPages, lines } = results
 
-    expect(results[26]).toBe(
+    expect(totalPages).toBe(37)
+
+    expect(lines[26].line).toBe(
       `(27/37) Plo Koon - The Phantom Menace, Attack of the Clones, Revenge of the Sith`
     )
   },
@@ -111,9 +131,11 @@ test(
 
     expect(error).toBe(null)
 
-    expect(results.length).toBe(1)
+    const { totalPages, lines } = results
 
-    expect(results[0]).toBe(
+    expect(totalPages).toBe(1)
+
+    expect(lines[0].line).toBe(
       `(1/1) Lando Calrissian - The Empire Strikes Back, Return of the Jedi`
     )
 
@@ -124,9 +146,11 @@ test(
 
     expect(e).toBe(null)
 
-    expect(r.length).toBe(1)
+    const { totalPages: tp, lines: ls } = r
 
-    expect(r[0]).toBe(`(1/1) Biggs Darklighter - A New Hope`)
+    expect(tp).toBe(1)
+
+    expect(ls[0].line).toBe(`(1/1) Biggs Darklighter - A New Hope`)
   },
   defaultTimeout
 )
