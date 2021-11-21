@@ -4,6 +4,11 @@ const { io } = require('socket.io-client')
 const search = require('./commands/search.js')
 const { ws } = require('./datasources/ws/index.js')
 
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
+
 const {
   WS_SERVER_URL = 'localhost',
   WS_SERVER_PORT = '3000',
@@ -22,11 +27,6 @@ const action = (query) =>
     process.stderr.write(`${err}\n`)
     // Process.exit(1)
   })
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-})
 
 process.stdout.write('What character would you like to search for? ')
 rl.on('line', action)
