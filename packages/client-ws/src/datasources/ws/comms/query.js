@@ -2,8 +2,8 @@ const message = {
   query: 'l'
 }
 
-const mapWsStarWarsResToString = (films, name) =>
-  `${name} - ${films.toString()}`
+const mapWsStarWarsResToString = (page, resultCount, films, name) =>
+  `(${page}/${resultCount}) ${name} - ${films.toString()}`
 
 const hasFinishedPagination = (page, resultCount) => page === resultCount
 
@@ -12,7 +12,7 @@ const onResult =
   ({ error, films, name, page, resultCount }) => {
     if (error) return reject(error)
 
-    totalData.push(mapWsStarWarsResToString(films, name))
+    totalData.push(mapWsStarWarsResToString(page, resultCount, films, name))
 
     if (hasFinishedPagination(page, resultCount)) return resolve(totalData)
 
