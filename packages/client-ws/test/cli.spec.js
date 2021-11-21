@@ -11,11 +11,14 @@ const parseResult = (output, resolve) => (page) => {
   const totalPages = Number(_totalPages)
 
   if (i >= 0) {
-    output.results.lines.push({ page: i, line: page })
+    let [_, films] = page.match(/\[(.*?)\]/)
+    films = films.split(',')
+
+    output.results.characters.push({ page: i, desc: page, films })
 
     if (i === totalPages) {
       const allData = Object.assign(output, {
-        results: { lines: output.results.lines, totalPages }
+        results: { characters: output.results.characters, totalPages }
       })
       resolve(allData)
     }
@@ -37,7 +40,7 @@ const parseError = (resolve, output) => (data) => {
 
 const writeQuery = (c, query = 'Luke Skywalker') =>
   new Promise((resolve) => {
-    const output = { error: null, results: { lines: [], totalPages: 0 } }
+    const output = { error: null, results: { characters: [], totalPages: 0 } }
 
     const parseStdOut = parseResults(resolve, output)
     const parseStdErr = parseError(resolve, output)
@@ -62,13 +65,17 @@ test(
 
     expect(error).toBe(null)
 
-    const { totalPages, lines } = results
+    const { characters, totalPages } = results
 
     expect(totalPages).toBe(1)
 
-    expect(lines[0].line).toBe(
-      '(1/1) Luke Skywalker - A New Hope, The Empire Strikes Back, Return of the Jedi, Revenge of the Sith'
+    const [lukeSkywalker] = characters
+
+    expect(lukeSkywalker.desc).toBe(
+      '(1/1) Luke Skywalker - [A New Hope, The Empire Strikes Back, Return of the Jedi, Revenge of the Sith]'
     )
+
+    expect(lukeSkywalker.films.length).toBe(4)
   },
   defaultTimeout
 )
@@ -81,13 +88,17 @@ test(
 
     expect(error).toBe(null)
 
-    const { totalPages, lines } = results
+    const { totalPages, characters } = results
 
     expect(totalPages).toBe(1)
 
-    expect(lines[0].line).toBe(
-      '(1/1) Darth Vader - A New Hope, The Empire Strikes Back, Return of the Jedi, Revenge of the Sith'
+    const [darthVader] = characters
+
+    expect(darthVader.desc).toBe(
+      '(1/1) Darth Vader - [A New Hope, The Empire Strikes Back, Return of the Jedi, Revenge of the Sith]'
     )
+
+    expect(darthVader.films.length).toBe(4)
   },
   defaultTimeout
 )
@@ -98,7 +109,7 @@ test(
     const QUERY = 'Roger Moore'
     const { results, error } = await writeQuery(this.c, QUERY)
 
-    expect(results.lines.length).toBe(0)
+    expect(results.characters.length).toBe(0)
 
     expect(error).toBe(`No valid matches retrieved for query '${QUERY}'`)
   },
@@ -113,11 +124,15 @@ test(
 
     expect(error).toBe(null)
 
-    const { totalPages, lines } = results
+    const { totalPages, characters } = results
 
     expect(totalPages).toBe(2)
 
-    expect(lines[1].line).toBe(`(2/2) Darth Maul - The Phantom Menace`)
+    const [_, darthMaul] = characters
+
+    expect(darthMaul.desc).toBe(`(2/2) Darth Maul - [The Phantom Menace]`)
+
+    expect(darthMaul.films.length).toBe(1)
   },
   defaultTimeout
 )
@@ -129,13 +144,17 @@ test(
 
     expect(error).toBe(null)
 
-    const { totalPages, lines } = results
+    const { totalPages, characters } = results
 
     expect(totalPages).toBe(1)
 
-    expect(lines[0].line).toBe(
-      `(1/1) Lando Calrissian - The Empire Strikes Back, Return of the Jedi`
+    const [landoCalrissian] = characters
+
+    expect(landoCalrissian.desc).toBe(
+      `(1/1) Lando Calrissian - [The Empire Strikes Back, Return of the Jedi]`
     )
+
+    expect(landoCalrissian.films.length).toBe(2)
 
     const { results: r, error: e } = await writeQuery(
       this.c,
@@ -144,11 +163,15 @@ test(
 
     expect(e).toBe(null)
 
-    const { totalPages: tp, lines: ls } = r
+    const { totalPages: tp, characters: chs } = r
 
     expect(tp).toBe(1)
 
-    expect(ls[0].line).toBe(`(1/1) Biggs Darklighter - A New Hope`)
+    const [biggsDarklighter] = chs
+
+    expect(biggsDarklighter.desc).toBe(`(1/1) Biggs Darklighter - [A New Hope]`)
+
+    expect(biggsDarklighter.films.length).toBe(1)
   },
   defaultTimeout
 )

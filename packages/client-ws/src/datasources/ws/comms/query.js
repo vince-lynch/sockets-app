@@ -3,7 +3,7 @@ const message = {
 }
 
 const mapWsStarWarsResToString = (page, resultCount, films, name) =>
-  `(${page}/${resultCount}) ${name} - ${films.toString()}`
+  `(${page}/${resultCount}) ${name} - [${films.toString()}]`
 
 const hasFinishedPagination = (page, resultCount) => page === resultCount
 
