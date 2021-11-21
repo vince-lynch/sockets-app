@@ -1,7 +1,7 @@
 const path = require('path')
 const { spawn } = require('child_process')
 
-const defaultTimeout = 14 * 1000
+const defaultTimeout = 20 * 1000
 
 const writeQuery = (c, query = 'Luke Skywalker') =>
   new Promise((resolve) => {
