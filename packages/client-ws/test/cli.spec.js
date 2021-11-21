@@ -106,20 +106,18 @@ test(
 )
 
 test(
-  'Character "l" should return lots of results',
+  'Character with "Darth" prefix should return a few different results',
   async () => {
-    const QUERY = 'l'
+    const QUERY = 'Darth'
     const { results, error } = await writeQuery(this.c, QUERY)
 
     expect(error).toBe(null)
 
     const { totalPages, lines } = results
 
-    expect(totalPages).toBe(37)
+    expect(totalPages).toBe(2)
 
-    expect(lines[26].line).toBe(
-      `(27/37) Plo Koon - The Phantom Menace, Attack of the Clones, Revenge of the Sith`
-    )
+    expect(lines[1].line).toBe(`(2/2) Darth Maul - The Phantom Menace`)
   },
   defaultTimeout
 )
