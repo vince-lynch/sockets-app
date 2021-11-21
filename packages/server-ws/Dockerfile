@@ -4,6 +4,8 @@ FROM node:14-alpine
 # defaults to production, compose overrides this to development on build and run
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
+# Bypass https as https://swapi.dev hasn't renewed its certificate
+ENV NODE_TLS_REJECT_UNAUTHORIZED 0
 
 # Create app directory
 WORKDIR /usr/src/app
