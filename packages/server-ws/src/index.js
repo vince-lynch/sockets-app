@@ -18,9 +18,19 @@ const app = express()
 const httpServer = createServer(app)
 const server = new Server(httpServer)
 
+/*
+ * Const disconnectTimes = 0
+ * const disconnectTotalTimes = 5
+ */
+
 server.on('connection', (socket) => {
   console.log('got connection')
-  // Socket.disconnect()
+  /*
+   * If (disconnectTimes < disconnectTotalTimes) {
+   *   socket.disconnect()
+   *   disconnectTimes += 1
+   * }
+   */
 
   socket.on(TOPIC_SEARCH, async (message) => {
     const matches = await doSearch(message.query)
