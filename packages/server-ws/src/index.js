@@ -4,6 +4,8 @@ const { createServer } = require('http')
 const { Server } = require('socket.io')
 const { doSearch } = require('./swapi-api.js')
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0
+
 /**
  * Topic for incoming search queries
  */
