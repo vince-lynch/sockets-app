@@ -13,7 +13,7 @@ const connect = (io) => async (protocol, host, port) =>
 const onConnected = (conn, onConnectCb) =>
   new Promise((resolve) =>
     conn.on('connect', () => {
-      process.stderr.write('\n-- client connected\n')
+      process.stdout.write('\n-- client connected\n')
       onConnectCb()
       return resolve(conn)
     })
